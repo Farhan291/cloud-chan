@@ -1,0 +1,6 @@
+location            = "centralindia"
+resource_group_name = "light-vm-rg"
+vm_name             = "terraform-vm"
+vm_size             = "Standard_B1ms"
+admin_name          = "light"
+ssh_public_key      = "~/.ssh/id_ed25519_main.pub"

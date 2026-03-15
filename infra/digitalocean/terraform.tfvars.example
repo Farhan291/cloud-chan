@@ -1,0 +1,5 @@
+do_token       = "dop_v1_xxxxxxxxxxxx"
+region         = "blr1"
+vm_name        = "light-droplet"
+ssh_public_key = "~/.ssh/id_ed25519_main.pub"
+vm_size        = "s-2vcpu-4gb"
