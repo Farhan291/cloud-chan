@@ -30,7 +30,7 @@
     #fail2ban 
     services.fail2ban = {
         enable = true;
-        maxrety =5;
+        maxretry =5;
         bantime = "10m";
     };
 
