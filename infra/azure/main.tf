@@ -137,6 +137,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     version   = "latest"
   }
 
-  # bootstrap docker + tools on first boot
-  custom_data = base64encode(file("${path.module}/../../scripts/cloud-init.sh"))
+  vtpm_enabled        = false
+  secure_boot_enabled = false
+
 }
