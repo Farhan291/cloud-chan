@@ -7,13 +7,32 @@
         vim
         curl
         wget
-        docker
         ripgrep
         zoxide
         starship
         fastfetch
         htop
+        unzip
     ];
+
+    #docker 
+    virtualisation.docker = {
+        enable = true;
+        autoPrune.enable = true;
+    };
+
+    #ufw 
+    networking.firewall = {
+        enable = true;
+        allowedTCPPorts = [22 80 443];
+    };
+
+    #fail2ban 
+    services.fail2ban = {
+        enable = true;
+        maxrety =5;
+        bantime = "10m";
+    };
 
     services.openssh = {
         enable = true;
