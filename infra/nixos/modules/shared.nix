@@ -1,6 +1,10 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   #nix setting
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   environment.systemPackages = with pkgs; [
     git
@@ -15,7 +19,7 @@
     unzip
   ];
 
-  #bash 
+  #bash
   programs.bash = {
     enable = true;
     interactiveShellInit = ''
@@ -26,19 +30,23 @@
     };
   };
 
-  #docker 
+  #docker
   virtualisation.docker = {
     enable = true;
     autoPrune.enable = true;
   };
 
-  #ufw 
+  #ufw
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 80 443 ];
+    allowedTCPPorts = [
+      22
+      80
+      443
+    ];
   };
 
-  #fail2ban 
+  #fail2ban
   services.fail2ban = {
     enable = true;
     maxretry = 5;
@@ -53,7 +61,23 @@
     };
   };
 
-  #starship 
+  #secrets
+  age.secrets = {
+    postgres-env = {
+      file = ../../secrets/postgres.env.age;
+      path = "/run/secrets/postgres.env";
+    };
+    umami-env = {
+      file = ../../secrets/umami.env.age;
+      path = "/run/secrets/umami.env";
+    };
+    kcet-env = {
+      file = ../../secrets/kcet.env.age;
+      path = "/run/secrets/kcet.env";
+    };
+  };
+
+  #starship
   programs.starship = {
     enable = true;
     presets = [ "catppuccin-powerline" ];
@@ -65,7 +89,7 @@
     enableBashIntegration = true;
   };
 
-  #kernel 
+  #kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   system.stateVersion = "25.11";
