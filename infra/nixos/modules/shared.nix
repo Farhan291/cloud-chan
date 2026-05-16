@@ -1,49 +1,72 @@
-{pkgs, ...} : {
-    #nix setting
-    nix.settings.experimental-features = ["nix-command" "flakes"];
+{ pkgs, ... }: {
+  #nix setting
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-    environment.systemPackages = with pkgs; [
-        git
-        vim
-        curl
-        wget
-        ripgrep
-        zoxide
-        starship
-        fastfetch
-        htop
-        unzip
-    ];
+  environment.systemPackages = with pkgs; [
+    git
+    vim
+    curl
+    wget
+    ripgrep
+    zoxide
+    starship
+    fastfetch
+    htop
+    unzip
+  ];
 
-    #docker 
-    virtualisation.docker = {
-        enable = true;
-        autoPrune.enable = true;
+  #bash 
+  programs.bash = {
+    enable = true;
+    interactiveShellInit = ''
+      export TERM=xterm-256color
+    '';
+    shellAliases = {
+      rebuild = "sudo nixos-rebuild switch";
     };
+  };
 
-    #ufw 
-    networking.firewall = {
-        enable = true;
-        allowedTCPPorts = [22 80 443];
+  #docker 
+  virtualisation.docker = {
+    enable = true;
+    autoPrune.enable = true;
+  };
+
+  #ufw 
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 80 443 ];
+  };
+
+  #fail2ban 
+  services.fail2ban = {
+    enable = true;
+    maxretry = 5;
+    bantime = "10m";
+  };
+
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "prohibit-password";
     };
+  };
 
-    #fail2ban 
-    services.fail2ban = {
-        enable = true;
-        maxretry =5;
-        bantime = "10m";
-    };
+  #starship 
+  programs.starship = {
+    enable = true;
+    presets = [ "catppuccin-powerline" ];
+  };
 
-    services.openssh = {
-        enable = true;
-        settings = {
-            PasswordAuthentication = false;
-            PermitRootLogin = "prohibit-password";
-        };
-    };
+  #zoxide
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+  };
 
-    #kernel 
-    boot.kernelPackages = pkgs.linuxPackages_latest;
+  #kernel 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
-    system.stateVersion = "25.11";
- }
+  system.stateVersion = "25.11";
+}
