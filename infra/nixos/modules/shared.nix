@@ -61,6 +61,14 @@
     };
   };
 
+  #swap
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 2048;
+    }
+  ];
+
   #secrets
   age.secrets = {
     postgres-env = {
