@@ -9,6 +9,7 @@
     ./shell.nix
     ./bootstrap.nix
     ./packages.nix
+    ./users.nix
   ];
   #swap
   swapDevices = [

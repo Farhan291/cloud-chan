@@ -21,18 +21,4 @@
     hostName = "nixchan";
     useDHCP = true;
   };
-
-  users.users.root.openssh.authorizedKeys.keys = [
-    # public ssh key
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO41eHK1TJDjfQE4xu8IDP1zMFEZqB8szQkGxjUMnuP2"
-  ];
-
-  # user -light
-  users.users.light = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel"
-      "docker"
-    ];
-  };
 }
