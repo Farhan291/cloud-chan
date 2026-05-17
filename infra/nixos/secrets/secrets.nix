@@ -10,5 +10,4 @@ in
   "postgres.env.age".publicKeys = all;
   "umami.env.age".publicKeys = all;
   "kcet.env.age".publicKeys = all;
-  "hermes.env.age".publicKeys = all;
 }

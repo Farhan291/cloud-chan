@@ -13,14 +13,12 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hermes-agent.url = "github:NousResearch/hermes-agent";
   };
 
   outputs =
     { nixpkgs
     , disko
     , agenix
-    , hermes-agent
     , ...
     }:
     {
@@ -28,7 +26,6 @@
         azure = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
-            hermes-agent.nixosModules.default
             agenix.nixosModules.default
             disko.nixosModules.disko
             ./modules/shared.nix

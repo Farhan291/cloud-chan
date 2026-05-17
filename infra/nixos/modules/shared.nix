@@ -1,9 +1,5 @@
-{ pkgs, hermes-agent, ... }:
+{ pkgs, ... }:
 
-let
-  # gateway connect to telegram
-  telegramPythonPkg = pkgs.python312Packages.python-telegram-bot;
-in
 {
   #nix setting
   nix.settings.experimental-features = [
@@ -89,10 +85,6 @@ in
       file = ../secrets/kcet.env.age;
       path = "/run/secrets/kcet.env";
     };
-    telegram-env = {
-      file = ../secrets/hermes.env.age;
-      path = "/run/secrets/hermes.env";
-    };
   };
 
   #nvim dotfiles
@@ -116,30 +108,8 @@ in
     enableBashIntegration = true;
   };
 
-  #hermes-agent
-  services.hermes-agent = {
-    enable = true;
-    environmentFiles = [ "/run/secrets/hermes.env" ];
-    settings = {
-      messaging = {
-        telegram = {
-          enable = true;
-          token = "";
-        };
-      };
-    };
-  };
-
-  # extend hermes systemd service with PYTHONPATH
-  systemd.services.hermes-agent = {
-    environment = {
-      PYTHONPATH = "${telegramPythonPkg}/${pkgs.python312.sitePackages}";
-    };
-  };
-
   #kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   system.stateVersion = "25.11";
 }
-
