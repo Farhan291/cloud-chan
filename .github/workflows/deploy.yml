@@ -5,6 +5,10 @@ on:
     branches: [master]
     paths:
       - "infra/nixos/**"
+  pull_request:
+    branches: [master]
+    paths:
+      - "infra/nixos/**"
 
 jobs:
   deploy:
@@ -19,6 +23,7 @@ jobs:
         uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Setup SSH
+        if: github.event_name == 'push'
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
@@ -26,8 +31,15 @@ jobs:
           ssh-keyscan -H ${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy
+        if: github.event_name == 'push'
         run: |
           nix shell nixpkgs#nixos-rebuild --command nixos-rebuild switch \
             --flake ./infra/nixos#azure \
             --target-host root@${{ secrets.VPS_IP }} \
             --build-host localhost
+
+      - name: Build Only (Dry Run)
+        if: github.event_name == 'pull_request'
+        run: |
+          nix shell nixpkgs#nixos-rebuild --command nixos-rebuild build \
+            --flake ./infra/nixos#azure
