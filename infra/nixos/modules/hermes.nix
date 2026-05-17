@@ -81,6 +81,36 @@ in
 
     # SOUL.md — agent personality
     documents = {
+      "skills/git/nixos-pr-workflow/SKILL.md" = ''''
+        ---
+        name: nixos-pr-workflow
+        description: Workflow for making changes to the NixOS repository via Pull Requests.
+        ---
+        
+        # NixOS PR Workflow
+        
+        When making changes to Light's NixOS repository, strictly follow this workflow.
+        
+        ## Rules
+        1. **Never push directly to the main/master branch.**
+        2. **Git Identity:** Always commit with the identity "Hermes Agent".
+           ```bash
+           git config user.name "Hermes Agent"
+           ```
+        3. **Always use Pull Requests:** Create a new branch, commit the changes, push the branch, and open a PR. Wait for Light to approve and merge it.
+        
+        ## Steps
+        1. Create and checkout a new branch describing the change:
+           `git checkout -b feature/description`
+        2. Make necessary changes to the NixOS configuration.
+        3. Stage changes: `git add .`
+        4. Commit using the Hermes Agent identity:
+           `git -c user.name="Hermes Agent" commit -m "feat: description"`
+        5. Push the branch to the remote:
+           `git push -u origin feature/description`
+        6. Create a Pull Request (via `gh pr create` or equivalentREST/GUI).
+        7. Notify Light that the PR is ready for approval. Once merged, the `deploy.yml` GitHub Action will handle deployment.
+      ''';
       "SOUL.md" = ''
         # Hermes — Light's Personal Server Agent
 
