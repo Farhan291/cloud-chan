@@ -1,0 +1,24 @@
+name: PR Check NixOS
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - "infra/nixos/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - name: Magic Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Build Only (Dry Run)
+        run: |
+          nix shell nixpkgs#nixos-rebuild --command nixos-rebuild build \
+            --flake ./infra/nixos#azure
