@@ -10,6 +10,7 @@
     ./bootstrap.nix
     ./packages.nix
     ./users.nix
+    ./hermes.nix
   ];
   #swap
   swapDevices = [

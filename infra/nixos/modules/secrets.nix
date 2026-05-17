@@ -13,5 +13,9 @@
       file = ../secrets/kcet.env.age;
       path = "/run/secrets/kcet.env";
     };
+    hermes-env = {
+      file = ../secrets/hermes.env.age;
+      path = "/run/secrets/hermes.env";
+    };
   };
 }
