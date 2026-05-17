@@ -81,7 +81,7 @@ in
 
     # SOUL.md — agent personality
     documents = {
-      "skills/git/nixos-pr-workflow/SKILL.md" = ''''
+      "skills/git/nixos-pr-workflow/SKILL.md" = ''
         ---
         name: nixos-pr-workflow
         description: Workflow for making changes to the NixOS repository via Pull Requests.
