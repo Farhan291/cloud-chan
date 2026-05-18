@@ -11,5 +11,6 @@
     unzip
     btop
     tree
+    lolcat
   ];
 }
