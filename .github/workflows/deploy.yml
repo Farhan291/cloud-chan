@@ -14,8 +14,6 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@main
 
-      - uses: DeterminateSystems/magic-nix-cache-action@main
-
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -28,5 +26,4 @@ jobs:
         run: |
           nix shell nixpkgs#nixos-rebuild --command nixos-rebuild switch \
             --flake ./infra/nixos#azure \
-            --target-host root@${{ secrets.VPS_IP }} \
-            --build-host localhost
+            --target-host root@${{ secrets.VPS_IP }}
