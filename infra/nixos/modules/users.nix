@@ -19,6 +19,7 @@
   users.users = {
     root.openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO41eHK1TJDjfQE4xu8IDP1zMFEZqB8szQkGxjUMnuP2"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHOqbGdxGu1sfTF2nuxSsx1gWVslq1ECLdTR7ikmruKO light@fedora"
     ];
     light = {
       isNormalUser = true;
