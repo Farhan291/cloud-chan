@@ -12,5 +12,6 @@
     btop
     tree
     lolcat
+    sl
   ];
 }
