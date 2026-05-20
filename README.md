@@ -1,128 +1,54 @@
-# Cloud-Chan
+this is my infra setup for deploying my personal server on various cloud providers.
 
-Terraform configs and some scripts for my personal VPS.
-## Why ?
-i heavily relies on free cloud credits from azure, aws, gcp, digitalocean etc through my student programs. the credits expire and renew, so i constantly need to migrate my VPS from one provider to another,so instead of doing it manually every time, i automate with terraform.
+I tried to make it as reproducible and cloud provider agnostic as possible.
 
-all my actual projects live in their own git repos and run via docker compose. the only thing that needs moving between providers is the VM itself and some persistent data (docker volumes, databases, etc).
+The components of infra are:
 
-## How it works
+\# Terraform
 
-1. **spin up a VPS** using terraform (pick whichever provider has credits right now)
-2. **cloud-init** automatically installs docker, basic tools and sets up fail2ban.
-3. **clone my project repos** and `docker compose up` — everything is back
+- chose terraform for infra as code and version control my infra.
+- separate terraform for each cloud provider, right now only azure and digitalocean supported.
+- it configures resource group, subnetting, public ip, network security group, storage and vps instances.
 
-that's it. no kubernetes, no fancy orchestration. just one small VPS running docker compose.
+\# NixOS
 
-## Backup & migration strategy
+- nixos-anywhere to run nixos on any cloud provider regardless of whether the provider supports nixos or not.
+- nixos makes everything reproducible by using declarative nix configs and lets me have machine as code and version control my os.
+- agenix to manage secrets.
+- disko to manage disk partitions.
+- modules: - docker - bootstrap - nix - packages - secrets - security - shell - users
 
-i use [restic](https://restic.net/) + [backblaze B2](https://www.backblaze.com/cloud-storage) (free tier) for persistent data that isn't in git.
+\# Services
 
-**what gets backed up with restic:**
-- docker volumes (databases, uploads, etc)
-- any config files not in git
-- anything that would be painful to recreate
+- docker-compose automates and makes services reproducible.
+- traefik as reverse proxy for services, perfectly designed for containers and auto ssl certs.
+- hermes agent to automate fixes and updates for services.
+- github action to `nixos-rebuild` and deploy changes to the server, whenever changes are pushed to infra/nixos.
 
-**what doesn't need backup:**
-- application code (already in git, just clone again)
-- docker images (just pull again)
-- anything reproducible
+\# backup
 
-### Restic + backblaze setup
+- restic with backblaze to backup all docker volumes.
 
-```bash
-# install restic
-apt install restic
+\# structure
 
-# init a repo on backblaze b2
-export B2_ACCOUNT_ID="YOUR_KEY_ID"
-export B2_ACCOUNT_KEY="YOUR_APPLICATION_KEY"
-export RESTIC_PASSWORD="YOUR_BACKUP_PASSWORD"
+- infra/
+  - nixos/ #nixos configuration
+  - azure/ #terraform configuration for azure
+  - digitalocean/ #terraform configuration for digitalocean
+- scripts/ #scripts to automate infra tasks
 
-restic -r b2:your-bucket:/backup init
+\# usage
 
-# backup
-restic -r b2:your-bucket:/backup backup /var/lib/docker/volumes
+- choose cloud provider
+- copy terraform.tfvars.example to terraform.tfvars and fill in the values for your cloud provider.
+- run `terraform init` and `terraform apply` in the provider directory to deploy infra.
+- run  `nixos-rebuild switch \
+  --flake .#<azure|digitalocean> \
+  --target-host root@<VPS_PUBLIC_IP> \
+  --build-host localhost`   
+  in infra/nixos directory.
 
-# restore on new VPS
-restic -r b2:your-bucket:/backup restore latest --target /backup
-```
+\#todo
 
-backblaze B2 free tier gives you 10GB storage more than enough for a single VPS worth of persistent data.
-
-## Usage
-
-### 1. pick a provider and configure
-
-```bash
-cd infra/digitalocean   # or infra/azure
-
-# copy and fill in your values
-cp terraform.tfvars.example terraform.tfvars
-```
-
-### 2. spin up the VPS
-
-```bash
-terraform init
-terraform plan
-terraform apply
-```
-
-cloud-init will automatically install docker and basic tools. give it a couple minutes after the VM is up.
-
-### 3. restore your data
-
-ssh into the new VPS and run the command:
-
-```bash
-# set your backblaze creds
-export B2_ACCOUNT_ID="..."
-export B2_ACCOUNT_KEY="..."
-export RESTIC_PASSWORD="..."
-
-restic -r b2:your-bucket:/backup restore latest --target /backup 
-```
-
-### 4. start your projects
-
-```bash
-git clone <your-project-repo>
-cd your-project
-docker compose up -d
-```
-### 5. Backup current vps data
-
-#### Copy the backup script and edit env vars
-```bash
-sudo cp cloud-chan/scripts/backup.sh /usr/local/bin/backup.sh 
-sudo chmod +x /usr/local/bin/backup.
-```
-
-#### cron schedule
-```bash
-sudo crontab -e
-# add this line to the crontab
-0 3 * * * /usr/local/bin/backup.sh
-```
-
-## migration checklist
-
-when credits expire and you need to move:
-
-- [ ] backup persistent data with restic
-- [ ] `terraform destroy` on the old provider
-- [ ] `terraform apply` on the new provider
-- [ ] restore data, clone repos, `docker compose up`
-- [ ] update DNS if needed
-
-## currently supported providers
-
-- **azure** — student free credits
-- **digitalocean** — github student pack credits
-
-adding aws/gcp whenever i get around to it. the pattern is the same, just a VM with SSH, HTTP, HTTPS open and cloud-init to bootstrap docker.
-
-## note
-
-this is intentionally simple. it's one VPS running docker compose, not a production cluster. the goal is to make migration between providers take ~15 minutes instead of an hour of manual setup.
+- [] add support for aws and gcp infra using terraform.
+- [] nixos config for aws and gcp specific.
