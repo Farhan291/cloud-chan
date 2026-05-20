@@ -11,7 +11,8 @@
     unzip
     btop
     tree
-    lolcat
-    sl
+    lazygit
+    lazydocker
+    systemd-manager-tui
   ];
 }
