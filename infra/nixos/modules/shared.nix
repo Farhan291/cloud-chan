@@ -11,6 +11,7 @@
     ./packages.nix
     ./users.nix
     ./hermes.nix
+    ./tailscale.nix
   ];
   #swap
   swapDevices = [

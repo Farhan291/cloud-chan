@@ -17,5 +17,8 @@
       file = ../secrets/hermes.env.age;
       path = "/run/secrets/hermes.env";
     };
+    tailscale-env = {
+      file = ../secrets/tailscale.env.age;
+    };
   };
 }

@@ -11,4 +11,5 @@ in
   "umami.env.age".publicKeys = all;
   "kcet.env.age".publicKeys = all;
   "hermes.env.age".publicKeys = all;
+  "tailscale.env.age".publicKeys = all;
 }
