@@ -36,6 +36,17 @@
             ./hosts/azure/disk-config.nix
           ];
         };
+        digitalocean = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            hermes-agent.nixosModules.default
+            agenix.nixosModules.default
+            disko.nixosModules.disko
+            ./modules/shared.nix
+            ./hosts/digitalocean/configuration.nix
+            ./hosts/digitalocean/disk-config.nix
+          ];
+        };
       };
     };
 }
