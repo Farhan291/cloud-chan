@@ -14,5 +14,6 @@
     lazygit
     lazydocker
     systemd-manager-tui
+    zellij
   ];
 }
